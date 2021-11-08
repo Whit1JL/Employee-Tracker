@@ -1,16 +1,28 @@
 // connect inquirer, mysql, and console table
-const { prompt } = require("inquirer");
-const db = require("./db");
+const inquirer = require("inquirer");
+const mysql = require("mysql2");
 require("console.table");
+
+const connection = mysql.createConnection({
+    host: "localhost",
+    user: "root",
+    password: "password",
+    database: "employee_db",
+    port: 3008
+})
+
+connection.connect(function (err) {
+    if (err) throw err
+    startTracker();
+})
 
 function startTracker() {
     inquirer
         .prompt({
             name: "action",
             type: "list",
-            message: "Where would you like to begin?",
+            message: "Where would you like to start?",
             choices: [
-                {
                 "View all employees",
                 "View all departments",
                 "View all roles",
@@ -19,7 +31,6 @@ function startTracker() {
                 "Add roles",
                 "Update roles",
                 "Finished"
-            }
             ]
         }) .then(function (answer) {
             switch (answer.action) {
@@ -67,7 +78,7 @@ function employeeSearch() {
         function (err, res) {
             if (err) throw err
             console.table(res)
-            beginTracker()
+            startTracker()
         }
     )
 }
@@ -79,7 +90,7 @@ function deptSearch() {
         function (err, res) {
             if (err) throw err
             console.table(res)
-            beginTracker()
+            startTracker()
         }
     )
 }
@@ -91,7 +102,7 @@ function roleSearch() {
         function (err, res) {
             if (err) throw err
             console.table(res)
-            beginTracker()
+            startTracker()
         }
     )
 }
@@ -134,14 +145,14 @@ function addEmployee() {
             },
             function (err) {
                 if (err) throw err
-                beginTracker()
+                startTracker()
                 //upate employee manager
             }
         )
     })
 }
 
-//Function that adds a department into the table
+//Function that adds a department in the table
 function addDept() {
     inquirer
         .prompt({
@@ -156,7 +167,7 @@ function addDept() {
                 },
                 function (err, res) {
                     if (err) throw err
-                    beginTracker()
+                    startTracker()
                 })
         })
 }
