@@ -1,11 +1,12 @@
 // connect inquirer, mysql, and console table
-const inquirer = require("inquirer");
+const { prompt } = require("inquirer");
 const mysql = require("mysql");
-const ctable = require("console.table");
+const db = require("./db");
+require("console.table");
 
 var connection = mysql.createConnection({
     host: "localhost",
-    port: 3004,
+    port: 3001,
     user: "root",
     password: "password",
     database: "employee_db"
@@ -23,6 +24,7 @@ function startTracker() {
             type: "list",
             message: "Where would you like to begin?",
             choices: [
+                {
                 "View all employees",
                 "View all departments",
                 "View all roles",
@@ -31,6 +33,7 @@ function startTracker() {
                 "Add roles",
                 "Update roles",
                 "Finished"
+            }
             ]
         }) .then(function (answer) {
             switch (answer.action) {
