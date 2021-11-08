@@ -1,21 +1,7 @@
 // connect inquirer, mysql, and console table
 const { prompt } = require("inquirer");
-const mysql = require("mysql");
 const db = require("./db");
 require("console.table");
-
-var connection = mysql.createConnection({
-    host: "localhost",
-    port: 3001,
-    user: "root",
-    password: "password",
-    database: "employee_db"
-})
-
-connection.connect(function (err) {
-    if (err) throw err
-    startTracker();
-})
 
 function startTracker() {
     inquirer
