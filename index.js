@@ -4,12 +4,12 @@ const mysql = require("mysql2");
 require("console.table");
 
 const connection = mysql.createConnection({
-    host: "localhost",
+    host: 'localhost',
     user: "root",
-    password: "password",
+    password: "SQLJWhitL1##77",
     database: "employee_db",
-    port: 3008
-})
+    port: 3306
+});
 
 connection.connect(function (err) {
     if (err) throw err
@@ -73,7 +73,7 @@ function startTracker() {
 //Function providing list of employee data in combination with the Dept, role, and also provides the manager data
 function employeeSearch() {
 
-    connection.query("SELECT employee.id, employee.last_name, employee.first_name, role.title, name AS department, role.salary, CONCAT(manager.first_name, ' ', manager.last_name) AS manager FROM employee LEFT JOIN role on employee.role_id = role.id LEFT JOIN department on role.department_id = department.id LEFT JOIN employee manager on manager.id = employee.manager_id;",
+    connection.query("SELECT employee.id, employee.last_name, employee.first_name, roles.title, department.names AS Department, roles.salary, CONCAT(manager.first_name, ' ', manager.last_name) AS manager FROM employee LEFT JOIN roles on employee.roles_id = roles.id LEFT JOIN department on roles.department_id = department.id LEFT JOIN employee manager on manager.id = employee.manager_id;",
 
         function (err, res) {
             if (err) throw err
@@ -98,7 +98,7 @@ function deptSearch() {
 //function that populates a list of all the roles
 function roleSearch() {
     connection.query(
-        "SELECT * FROM role",
+        "SELECT * FROM roles",
         function (err, res) {
             if (err) throw err
             console.table(res)
@@ -125,7 +125,7 @@ function addEmployee() {
         {
             type: "input",
             message: "What is the employee's title (numerical value 1-8)?",
-            name: "role_id"
+            name: "roles_id"
         },
         {
             type: "input",
@@ -140,7 +140,7 @@ function addEmployee() {
             {
                 first_name: answer.first_name,
                 last_name: answer.last_name,
-                role_id: answer.role_id,
+                roles_id: answer.roles_id,
                 manager_id: answer.manager_id,
             },
             function (err) {
@@ -161,7 +161,7 @@ function addDept() {
             name: "department"
         })
         .then(function (answer) {
-            connection.query("INSERT INTO department SET ?",
+            connection.query("INSERT INTO Department SET",
                 {
                     name: answer.department,
                 },
@@ -193,7 +193,7 @@ function addRoles() {
     ]
     inquirer.prompt(roleQ).then(function (answer) {
         connection.query(
-            "INSERT INTO role SET ?",
+            "INSERT INTO roles SET ?",
             {
                 title: answer.title,
                 department_id: answer.id,
@@ -208,13 +208,13 @@ function addRoles() {
 }
 
 //Function that updates roles and assigns an employee to the newly updated role
-function updateRole() {
+function updateRoles() {
 
     inquirer
         .prompt([
             {
                 type: "input",
-                name: "role_id",
+                name: "roles_id",
                 message: "Which role id number would you like to update (numerical value 1-8)?"
             },
             {
@@ -224,9 +224,9 @@ function updateRole() {
             }
         ])
         .then(function (answer) {
-            connection.query("UPDATE employee SET role_id = ? WHERE id = ?",
+            connection.query("UPDATE employee SET roles_id = ? WHERE id = ?",
                 [
-                    answer.role_id,
+                    answer.roles_id,
                     answer.employee_id
                 ],
                 function (err, res) {
